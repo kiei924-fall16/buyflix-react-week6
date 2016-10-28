@@ -7,18 +7,17 @@ var SampleData = require('./movie-data');           // SampleData.movies
 var LotsMoreMovies = require('./lots-more-movies'); // LotsMoreMovies.movies
 
 var MovieList = React.createClass({
+  renderMovie: function(movie) {
+    return (
+      <Movie movie={movie}
+             movieClicked={this.props.movieClicked} />
+    )
+  },
   render: function() {
     return (
       <div className="movies col-sm-8">
         <div className="row">
-          {this.props.movies.map(function(movie) {
-            return (
-              <Movie poster={movie.poster}
-                     title={movie.title}
-                     genre={movie.genre}
-                     runtime={movie.runtime} />
-            )
-          })}
+          {this.props.movies.map(this.renderMovie)}
         </div>
       </div>
     )
@@ -26,15 +25,18 @@ var MovieList = React.createClass({
 })
 
 var Movie = React.createClass({
+  movieClicked: function() {
+    this.props.movieClicked(this.props.movie)
+  },
   render: function() {
     return (
       <div className="col-sm-2">
         <div className="thumbnail">
-          <img className="img-responsive" src={this.props.poster} />
+          <img onClick={this.movieClicked} className="img-responsive" src={this.props.movie.poster} />
           <div className="caption">
-            <h3>{this.props.title}</h3>
-            <p>{this.props.genre}</p>
-            <p>{this.props.runtime}</p>
+            <h3>{this.props.movie.title}</h3>
+            <p>{this.props.movie.genre}</p>
+            <p>{this.props.movie.runtime}</p>
           </div>
         </div>
       </div>
@@ -104,6 +106,9 @@ var MovieDetails = React.createClass({
 })
 
 var App = React.createClass({
+  movieClicked: function(movie) {
+    alert(movie.title + " was clicked!")
+  },
   loadMoreMoviesClicked: function() {
     var existingMovies = SampleData.movies
     var newMoviesToAdd = LotsMoreMovies.movies
@@ -123,7 +128,7 @@ var App = React.createClass({
         <Header name="Brian" />
         <SortBar movieCount={this.state.movies.length} />
         <div className="main row">
-          <MovieList movies={this.state.movies} />
+          <MovieList movies={this.state.movies} movieClicked={this.movieClicked} />
           <MovieDetails loadMoreMoviesClicked={this.loadMoreMoviesClicked} />
         </div>
       </div>
