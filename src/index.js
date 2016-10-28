@@ -82,22 +82,22 @@ var MovieDetails = React.createClass({
         <h3><a href="#" className="btn btn-success" onClick={this.props.loadMoreMoviesClicked}>Load more movies!</a></h3>
         <div className="row">
           <div className="col-sm-6">
-            <img className="poster img-responsive" src="http://ia.media-imdb.com/images/M/MV5BOTAzODEzNDAzMl5BMl5BanBnXkFtZTgwMDU1MTgzNzE@._V1_SX300.jpg" />
+            <img className="poster img-responsive" src={this.props.movie.poster} />
           </div>
           <div className="col-sm-6">
-            <h3>Star Wars: The Force Awakens</h3>
-            <p className="rating">PG-13</p>
-            <p><strong>Genre:</strong> Action, Adventure, Fantasy</p>
-            <p><strong>Runtime:</strong> 135 mins</p>
-            <p><strong>Released:</strong> 12/18/15</p>
+            <h3>{this.props.movie.title}</h3>
+            <p className="rating">{this.props.movie.rating}</p>
+            <p><strong>Genre:</strong> {this.props.movie.genre}</p>
+            <p><strong>Runtime:</strong> {this.props.movie.runtime}</p>
+            <p><strong>Released:</strong> {this.props.movie.released}</p>
           </div>
         </div>
         <div className="row">
           <div className="col-sm-12">
             <h4>Summary</h4>
-            <p>Three decades after the defeat of the Galactic Empire, a new threat arises. The First Order attempts to rule the galaxy and only a ragtag group of heroes can stop them, along with the help of the Resistance.</p>
+            <p>{this.props.movie.plot}</p>
             <h4>Cast</h4>
-            <p>Harrison Ford, Mark Hamill, Carrie Fisher, Adam Driver</p>
+            <p>{this.props.movie.cast}</p>
           </div>
         </div>
       </div>
@@ -107,7 +107,9 @@ var MovieDetails = React.createClass({
 
 var App = React.createClass({
   movieClicked: function(movie) {
-    alert(movie.title + " was clicked!")
+    this.setState({
+      currentMovie: movie
+    })
   },
   loadMoreMoviesClicked: function() {
     var existingMovies = SampleData.movies
@@ -119,7 +121,8 @@ var App = React.createClass({
   },
   getInitialState: function() {
     return {
-      movies: SampleData.movies
+      movies: SampleData.movies,
+      currentMovie: SampleData.movies[0]
     }
   },
   render: function() {
@@ -129,7 +132,7 @@ var App = React.createClass({
         <SortBar movieCount={this.state.movies.length} />
         <div className="main row">
           <MovieList movies={this.state.movies} movieClicked={this.movieClicked} />
-          <MovieDetails loadMoreMoviesClicked={this.loadMoreMoviesClicked} />
+          <MovieDetails movie={this.state.currentMovie} loadMoreMoviesClicked={this.loadMoreMoviesClicked} />
         </div>
       </div>
     )
